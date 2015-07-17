@@ -19,15 +19,10 @@ The idea is to blindly separate channels so that their statistical independence 
 ## Copyrights
 
 ### FastICA for Matlab 7.x and 6.x
-Version 2.5, October 19 2005
-Copyright (c) Hugo Gävert, Jarmo Hurri, Jaakko Särelä, and Aapo Hyvärinen.
+Version 2.5, October 19 2005, Copyright (c) Hugo Gävert, Jarmo Hurri, Jaakko Särelä, and Aapo Hyvärinen.
 
 ### Arabica Toolbox (arabica)
-Version 1.0 14-Jul-2008
-HomeUrl http://launchpad.net/arabica
+Version 1.0 14-Jul-2008, HomeUrl: http://launchpad.net/arabica
 
-Copyright © 2003-2009  Jarkko Ylipaavalniemi
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it. 
-There is NO WARRANTY, to the extent permitted by law.
+Copyright © 2003-2009  Jarkko Ylipaavalniemi, License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>, This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law.
 
