@@ -1,6 +1,14 @@
 % Wrapper for fastICA/arabica for image data
 function main_separateMixedImages_fastICA(im)
     
+    % Input 
+    %   im  - cell with as many elements as there are channels im{1},..im{4}
+    %         for example, you could do another loop around this function
+    %         in order to separate whole stacks, and folders, etc.
+    
+    % Output
+    %  - no output at the moment, fix when going beyond just toying around      
+
     % See e.g.
     % Guest Editorial - Special Issue: Latent variable analysis and signal separation
     % V. Vignerona, V. Zarzosob, R. Gribonvalc, E. Vincentc
