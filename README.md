@@ -2,8 +2,10 @@
 
 With Independent Component Analysis [1,2,3] variants FastICA (http://research.ics.aalto.fi/ica/fastica/) and arabica (https://launchpad.net/arabica, which is basically a robust extension of FastICA [4]). 
 
-The idea is to blindly separate channels so that their statistical independence is maximized using the FastICA variant of Independent Component Analysis (ICA:
-https://dl.dropboxusercontent.com/u/6757026/githubFigures/ica_basicIllustration.png
+The idea is to blindly separate channels so that their statistical independence is maximized using the FastICA variant of Independent Component Analysis (ICA):
+
+![ICA](https://dl.dropboxusercontent.com/u/6757026/githubFigures/ica_basicIllustration.png)
+
 
 ## References
 
