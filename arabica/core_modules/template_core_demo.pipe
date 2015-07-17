@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline version=".1">
+        <connections>
+                <connection source="Samples.Output_0" sink="Generate.Samples_0" />
+                <connection source="Generate.DataMatrix_0" sink="Mixture.Signals_0" />
+                <connection source="Generate.DataMatrix_1" sink="Mixture.Signals_0" />
+                <connection source="Samples.Output_0" sink="Generate.Samples_1" />
+                <connection source="Mixture.MixingMatrix_0" sink="Save.Input1_0" />
+                <connection source="Mixture.OriginalSignals_0" sink="Save.Input2_0" />
+                <connection source="Mixture.MixedSignals_0" sink="Save.Input3_0" />
+                <connection source="Save.Output_0" sink="Whos.Input_0" />
+        </connections>
+        <moduleGroup name="Core Test" description="A template workflow demonstrating the use of Arabica Core modules and also serves as a test." id="CoreTest_0" package="Arabica/Core" version="1.0" posX="0" posY="0" rotation="0">
+                <tag>Arabica</tag>
+                <uri>http://launchpad.net/arabica-core</uri>
+                <metadata>
+                        <data key="__creationDateKey" value="Tue Apr 28 18:08:52 EEST 2009" />
+                </metadata>
+                <dataModule name="Samples" description="Number of samples to generate.&#xA;&#xA;This is just a convenient way to share input value(s) with multiple modules." id="Samples_0" package="Arabica/Core" version="1.0" posX="17" posY="31" rotation="0" dirDump="false" type="Number" source="true">
+                        <authors>
+                                <author fullName="Jarkko Ylipaavalniemi" email="jarkko.ylipaavalniemi@tkk.fi" website="http://www.cis.hut.fi/whyj" />
+                        </authors>
+                        <citations />
+                        <tag />
+                        <uri>http://launchpad.net/arabica-core</uri>
+                        <metadata>
+                                <data key="__creationDateKey" value="Tue Apr 28 18:08:52 EEST 2009" />
+                        </metadata>
+                        <values>
+                                <value>1000</value>
+                        </values>
+                        <output name="Output" id="Samples.Output_0" enabled="true" required="true" order="-1">
+                                <format type="Number" cardinality="1" />
+                        </output>
+                </dataModule>
+                <module name="Generate" location="arabica://module/core/generate" id="Generate_0" posX="278" posY="83" rotation="1">
+                        <input name="Samples" id="Generate.Samples_0" enabled="true" />
+                        <input name="Signals" id="Generate.Signals_0" enabled="true">
+                                <values>
+                                        <value>6</value>
+                                </values>
+                        </input>
+                        <input name="Type" id="Generate.Type_0" enabled="true">
+                                <values>
+                                        <value>random</value>
+                                </values>
+                        </input>
+                        <output name="Data Matrix" id="Generate.DataMatrix_0" enabled="true" />
+                </module>
+                <module name="Generate" location="arabica://module/core/generate" id="Generate_1" posX="278" posY="264" rotation="1">
+                        <input name="Samples" id="Generate.Samples_1" enabled="true" />
+                        <input name="Signals" id="Generate.Signals_1" enabled="true">
+                                <values>
+                                        <value>4</value>
+                                </values>
+                        </input>
+                        <input name="Type" id="Generate.Type_1" enabled="true">
+                                <values>
+                                        <value>noise</value>
+                                </values>
+                        </input>
+                        <input name="Scale" id="Generate.Scale_1" enabled="true">
+                                <values>
+                                        <value>0.1</value>
+                                </values>
+                        </input>
+                        <output name="Data Matrix" id="Generate.DataMatrix_1" enabled="true" />
+                </module>
+                <module name="Mixture" location="arabica://module/core/mixture" id="Mixture_0" posX="521" posY="93" rotation="1">
+                        <input name="Signals" id="Mixture.Signals_0" enabled="true" />
+                        <input name="Mixing" id="Mixture.Mixing_0" enabled="true">
+                                <values>
+                                        <value>uniform</value>
+                                </values>
+                        </input>
+                        <input name="Dimension" id="Mixture.Dimension_0" enabled="true">
+                                <values>
+                                        <value>20</value>
+                                </values>
+                        </input>
+                        <output name="Mixed Signals" id="Mixture.MixedSignals_0" enabled="true" />
+                        <output name="Original Signals" id="Mixture.OriginalSignals_0" enabled="true" />
+                        <output name="Mixing Matrix" id="Mixture.MixingMatrix_0" enabled="true" />
+                </module>
+                <module name="Save" location="arabica://module/core/save" id="Save_0" posX="721" posY="241" rotation="0">
+                        <input name="Input 1" id="Save.Input1_0" enabled="true" />
+                        <input name="Variable 1" id="Save.Variable1_0" enabled="true">
+                                <values>
+                                        <value>A</value>
+                                </values>
+                        </input>
+                        <input name="Input 2" id="Save.Input2_0" enabled="true" />
+                        <input name="Variable 2" id="Save.Variable2_0" enabled="true">
+                                <values>
+                                        <value>S</value>
+                                </values>
+                        </input>
+                        <input name="Input 3" id="Save.Input3_0" enabled="true" />
+                        <input name="Variable 3" id="Save.Variable3_0" enabled="true">
+                                <values>
+                                        <value>X</value>
+                                </values>
+                        </input>
+                        <output name="Output" id="Save.Output_0" enabled="true" />
+                </module>
+                <module name="Whos" location="arabica://module/core/whos" id="Whos_0" posX="540" posY="375" rotation="0">
+                        <input name="Input" id="Whos.Input_0" enabled="true" />
+                </module>
+                <annotations>
+                        <annotation name="This is just a convenient way to feed input values to multiple modules." width="200" height="100" posX="70" posY="167" background="255,255,153,255" foreground="0,0,0,255">
+                                <styles>
+                                        <style name="This is just a convenient way to feed input values to multiple modules.$0" fontSize="12" />
+                                </styles>
+                        </annotation>
+                        <annotation name="The output from this module can be seen in the standard output stream, or the optional output parameter can be enabled." width="200" height="100" posX="721" posY="381" background="255,153,153,255" foreground="0,0,0,255">
+                                <styles>
+                                        <style name="The output from this module can be seen in the standard output stream, or the optional output parameter can be enabled.$0" fontSize="12" />
+                                </styles>
+                        </annotation>
+                </annotations>
+        </moduleGroup>
+</pipeline>
+

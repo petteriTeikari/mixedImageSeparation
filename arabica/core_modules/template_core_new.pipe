@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline version=".1">
+        <connections>
+                <connection source="Types.Output_0" sink="Generate.Type_0" />
+                <connection source="Powers.Output_0" sink="Generate.Power_0" />
+                <connection source="Generate.DataMatrix_0" sink="Mixture.Signals_0" />
+                <connection source="Mixture.OriginalSignals_0" sink="VisualWhos.Input_0" />
+                <connection source="Mixture.MixingMatrix_0" sink="VisualWhos.Input_0" />
+                <connection source="Mixture.MixedSignals_0" sink="VisualWhos.Input_0" />
+        </connections>
+        <moduleGroup name="Core Demonstration" description="A template workflow demonstrating the use of Arabica Core modules and also serves as a test." id="CoreDemonstration_0" package="Arabica/Core" version="1.0" posX="0" posY="0" rotation="0">
+                <tag>Arabica</tag>
+                <uri>http://launchpad.net/arabica-core</uri>
+                <metadata>
+                        <data key="__creationDateKey" value="Tue Apr 28 18:08:52 EEST 2009" />
+                </metadata>
+                <dataModule name="Types" description="Types of signals to generate.&#xA;&#xA;This is just a convenient way to share input value(s) with multiple modules." id="Types_0" package="Arabica/Core" version="1.0" posX="41" posY="46" rotation="1" dirDump="false" type="Enumerated" source="true">
+                        <authors>
+                                <author fullName="Jarkko Ylipaavalniemi" email="jarkko.ylipaavalniemi@tkk.fi" website="http://www.cis.hut.fi/whyj" />
+                        </authors>
+                        <citations />
+                        <tag />
+                        <uri>http://launchpad.net/arabica-core</uri>
+                        <metadata>
+                                <data key="__creationDateKey" value="Tue Apr 28 18:08:52 EEST 2009" />
+                        </metadata>
+                        <values>
+                                <value>sinusoid</value>
+                                <value>sawtooth</value>
+                                <value>sawtooth</value>
+                                <value>square</value>
+                        </values>
+                        <output name="Output" id="Types.Output_0" enabled="true" required="true" order="-1">
+                                <format type="Enumerated" cardinality="1" />
+                        </output>
+                </dataModule>
+                <dataModule name="Powers" description="Powers to raise the generated signals to.&#xA;&#xA;This is just a convenient way to share input value(s) with multiple modules." id="Powers_0" package="Arabica/Core" version="1.0" posX="41" posY="157" rotation="1" dirDump="false" type="Number" source="true">
+                        <authors>
+                                <author fullName="Jarkko Ylipaavalniemi" email="jarkko.ylipaavalniemi@tkk.fi" website="http://www.cis.hut.fi/whyj" />
+                        </authors>
+                        <citations />
+                        <tag />
+                        <uri>http://launchpad.net/arabica-core</uri>
+                        <metadata>
+                                <data key="__creationDateKey" value="Tue Apr 28 18:08:52 EEST 2009" />
+                        </metadata>
+                        <values>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>5</value>
+                                <value>1</value>
+                        </values>
+                        <output name="Output" id="Powers.Output_0" enabled="true" required="true" order="-1">
+                                <format type="Number" cardinality="1" />
+                        </output>
+                </dataModule>
+                <module name="Generate" location="arabica://module/core/generate" id="Generate_0" posX="289" posY="84" rotation="1">
+                        <input name="Samples" id="Generate.Samples_0" enabled="true">
+                                <values>
+                                        <value>1000</value>
+                                </values>
+                        </input>
+                        <input name="Signals" id="Generate.Signals_0" enabled="true">
+                                <values>
+                                        <value>1</value>
+                                </values>
+                        </input>
+                        <input name="Type" id="Generate.Type_0" enabled="true" />
+                        <input name="Power" id="Generate.Power_0" enabled="true" />
+                        <output name="Data Matrix" id="Generate.DataMatrix_0" enabled="true" />
+                </module>
+                <module name="Mixture" location="arabica://module/core/mixture" id="Mixture_0" posX="531" posY="109" rotation="1">
+                        <input name="Signals" id="Mixture.Signals_0" enabled="true" />
+                        <input name="Mixing" id="Mixture.Mixing_0" enabled="true">
+                                <values>
+                                        <value>uniform</value>
+                                </values>
+                        </input>
+                        <input name="Dimension" id="Mixture.Dimension_0" enabled="true">
+                                <values>
+                                        <value>10</value>
+                                </values>
+                        </input>
+                        <output name="Mixed Signals" id="Mixture.MixedSignals_0" enabled="true" />
+                        <output name="Original Signals" id="Mixture.OriginalSignals_0" enabled="true" />
+                        <output name="Mixing Matrix" id="Mixture.MixingMatrix_0" enabled="true" />
+                </module>
+                <module name="Visual Whos"  location="arabica://localhost/visualize/core/whos" id="VisualWhos_0" posX="730" posY="300" rotation="0">
+                        <input name="Input" id="VisualWhos.Input_0" enabled="true" />
+                </module>
+                <annotations>
+                        <annotation name="These are just a convenient way to feed multiple input values to module(s)." width="200" height="100" posX="19" posY="267" background="255,255,153,255" foreground="0,0,0,255">
+                                <styles>
+                                        <style name="These are just a convenient way to feed multiple input values to module(s).$0" fontSize="12" />
+                                </styles>
+                        </annotation>
+                        <annotation name="This module actually gets executed 4 times due to the multiple input values." width="200" height="100" posX="273" posY="269" background="255,255,153,255" foreground="0,0,0,255">
+                                <styles>
+                                        <style name="This module actually gets executed 4 times due to the multiple input values.$0" fontSize="12" />
+                                </styles>
+                        </annotation>
+                        <annotation name="This is a visualize module, it means that it will open up window(s) when executed." width="200" height="100" posX="803" posY="248" background="255,153,153,255" foreground="0,0,0,255">
+                                <styles>
+                                        <style name="This is a visualize module, it means that it will open up window(s) when executed.$0" fontSize="12" />
+                                </styles>
+                        </annotation>
+                </annotations>
+        </moduleGroup>
+</pipeline>
+

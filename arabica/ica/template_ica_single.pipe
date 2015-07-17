@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline version=".1">
+        <connections>
+                <connection source="Simulate.SimulatedSignals_0" sink="RobustICA.Input_0" />
+                <connection source="Simulate.SimulatedSignals_0" sink="RobustICA.Input_1" />
+                <connection source="RobustICA.Output_0" sink="Cluster.Input_0" />
+                <connection source="RobustICA.Output_1" sink="Cluster.Input_0" />
+                <connection source="Cluster.Output_0" sink="Estimate.Clustering_0" />
+                <connection source="Cluster.Passthru_0" sink="Estimate.RobustComponents_0" />
+                <connection source="RobustICA.Passthru_0" sink="Estimate.DataMatrix_0" />
+                <connection source="Estimate.Centroids_0" sink="LocalDataSink.Input_0" />
+                <connection source="Simulate.OriginalSignals_0" sink="LocalDataSink.Input_0" />
+                <connection source="Estimate.Variances_0" sink="LocalDataSink.Input_0" />
+        </connections>
+        <moduleGroup name="Parallel ICA" description="A template workflow performing robust independent component analysis for a single dataset in two parallel modules." id="ParallelICA_0" package="Arabica/ICA" version="1.0" posX="0" posY="0" rotation="0">
+                <tag>Arabica</tag>
+                <tag>ICA</tag>
+                <tag>single</tag>
+                <tag>parallel</tag>
+                <uri>http://launchpad.net/arabica-ica</uri>
+                <metadata>
+                        <data key="__creationDateKey" value="Wed Apr 22 18:53:22 EEST 2009" />
+                </metadata>
+                <module name="Simulate" location="arabica://module/core/simulate" id="Simulate_0" posX="84" posY="12" rotation="1">
+                        <input name="Samples" id="Simulate.Samples_0" enabled="true">
+                                <values>
+                                        <value>1000</value>
+                                </values>
+                        </input>
+                        <input name="Signals 1" id="Simulate.Signals1_0" enabled="true">
+                                <values>
+                                        <value>1</value>
+                                </values>
+                        </input>
+                        <input name="Type 1" id="Simulate.Type1_0" enabled="true">
+                                <values>
+                                        <value>sinusoid</value>
+                                </values>
+                        </input>
+                        <input name="Signals 2" id="Simulate.Signals2_0" enabled="true">
+                                <values>
+                                        <value>1</value>
+                                </values>
+                        </input>
+                        <input name="Type 2" id="Simulate.Type2_0" enabled="true">
+                                <values>
+                                        <value>square</value>
+                                </values>
+                        </input>
+                        <input name="Signals 3" id="Simulate.Signals3_0" enabled="true">
+                                <values>
+                                        <value>1</value>
+                                </values>
+                        </input>
+                        <input name="Type 3" id="Simulate.Type3_0" enabled="true">
+                                <values>
+                                        <value>sawtooth</value>
+                                </values>
+                        </input>
+                        <input name="Power 3" id="Simulate.Power3_0" enabled="true">
+                                <values>
+                                        <value>5</value>
+                                </values>
+                        </input>
+                        <input name="Signals 4" id="Simulate.Signals4_0" enabled="true">
+                                <values>
+                                        <value>1</value>
+                                </values>
+                        </input>
+                        <input name="Type 4" id="Simulate.Type4_0" enabled="true">
+                                <values>
+                                        <value>impulse</value>
+                                </values>
+                        </input>
+                        <input name="Mixing" id="Simulate.Mixing_0" enabled="true">
+                                <values>
+                                        <value>uniform</value>
+                                </values>
+                        </input>
+                        <input name="Dimension" id="Simulate.Dimension_0" enabled="true">
+                                <values>
+                                        <value>10</value>
+                                </values>
+                        </input>
+                        <output name="Simulated Signals" id="Simulate.SimulatedSignals_0" enabled="true" />
+                        <output name="Original Signals" id="Simulate.OriginalSignals_0" enabled="true" />
+                </module>
+                <module name="Robust ICA" location="arabica://module/ica/ica" id="RobustICA_0" posX="379" posY="68" rotation="1">
+                        <input name="Input" id="RobustICA.Input_0" enabled="true" />
+                        <input name="Runs" id="RobustICA.Runs_0" enabled="true">
+                                <values>
+                                        <value>50</value>
+                                </values>
+                        </input>
+                        <input name="Dimensions" id="RobustICA.Dimensions_0" enabled="true">
+                                <values>
+                                        <value>6</value>
+                                </values>
+                        </input>
+                        <input name="Components" id="RobustICA.Components_0" enabled="true">
+                                <values>
+                                        <value>3</value>
+                                </values>
+                        </input>
+                        <input name="Bootstrap Fraction" id="RobustICA.BootstrapFraction_0" enabled="true">
+                                <values>
+                                        <value>0.8</value>
+                                </values>
+                        </input>
+                        <output name="Output" id="RobustICA.Output_0" enabled="true" />
+                        <output name="Passthru" id="RobustICA.Passthru_0" enabled="true" />
+                </module>
+                <module name="Robust ICA" location="arabica://module/ica/ica" id="RobustICA_1" posX="366" posY="374" rotation="1">
+                        <input name="Input" id="RobustICA.Input_1" enabled="true" />
+                        <input name="Runs" id="RobustICA.Runs_1" enabled="true">
+                                <values>
+                                        <value>50</value>
+                                </values>
+                        </input>
+                        <input name="Dimensions" id="RobustICA.Dimensions_1" enabled="true">
+                                <values>
+                                        <value>6</value>
+                                </values>
+                        </input>
+                        <input name="Components" id="RobustICA.Components_1" enabled="true">
+                                <values>
+                                        <value>3</value>
+                                </values>
+                        </input>
+                        <input name="Bootstrap Fraction" id="RobustICA.BootstrapFraction_1" enabled="true">
+                                <values>
+                                        <value>0.8</value>
+                                </values>
+                        </input>
+                        <output name="Output" id="RobustICA.Output_1" enabled="true" />
+                </module>
+                <module name="Cluster" location="arabica://module/ica/cluster" id="Cluster_0" posX="634" posY="170" rotation="1">
+                        <input name="Input" id="Cluster.Input_0" enabled="true" />
+                        <input name="Variable" id="Cluster.Variable_0" enabled="true">
+                                <values>
+                                        <value>A</value>
+                                </values>
+                        </input>
+                        <output name="Output" id="Cluster.Output_0" enabled="true" />
+                        <output name="Passthru" id="Cluster.Passthru_0" enabled="true" />
+                </module>
+                <module name="Estimate"  location="arabica://module/ica/estimate" id="Estimate_0" posX="811" posY="412" rotation="0">
+                        <input name="Clustering" id="Estimate.Clustering_0" enabled="true" />
+                        <input name="Robust Components" id="Estimate.RobustComponents_0" enabled="true" />
+                        <input name="Data Matrix" id="Estimate.DataMatrix_0" enabled="true" />
+                        <output name="Centroids" id="Estimate.Centroids_0" enabled="true" />
+                        <output name="Variances" id="Estimate.Variances_0" enabled="true" />
+                </module>
+                <dataModule name="Local Data Sink" description="" id="LocalDataSink_0" package="Arabica/ICA" version="1.0" posX="193" posY="653" rotation="0" dirDump="true" type="File" source="false">
+                        <fileTypes>
+                                <filetype name="File" extension="" description="Any type of data file" />
+                        </fileTypes>
+                        <metadata>
+                                <data key="__creationDateKey" value="Fri Apr 17 10:53:46 EEST 2009" />
+                        </metadata>
+                        <values>
+                                <value>pipeline://localhost/</value>
+                        </values>
+                        <input name="Input" id="LocalDataSink.Input_0" enabled="true" required="true" order="-1">
+                                <format type="File" cardinality="1">
+                                        <fileTypes>
+                                                <filetype name="File" extension="" description="Any type of data file" />
+                                        </fileTypes>
+                                </format>
+                        </input>
+                </dataModule>
+                <annotations>
+                        <annotation name="A total of 100 runs of ICA is performed in two parellel modules with 50 runs each, looking for 3 components in 6 dimensional whitened spaces." width="200" height="100" posX="301" posY="275" background="255,255,153,255" foreground="0,0,0,255">
+                                <styles>
+                                        <style name="A total of 100 runs of ICA is performed in two parellel modules with 50 runs each, looking for 3 components in 6 dimensional whitened spaces.$0" fontSize="12" />
+                                </styles>
+                        </annotation>
+                        <annotation name="As an example, the cluster centroids and variances are estimated." width="200" height="100" posX="589" posY="479" background="255,255,153,255" foreground="0,0,0,255">
+                                <styles>
+                                        <style name="As an example, the cluster centroids and variances are estimated.$0" fontSize="12" />
+                                </styles>
+                        </annotation>
+                        <annotation name="Example output sink, remember to correct the directory path before running!" width="200" height="100" posX="429" posY="666" background="255,153,153,255" foreground="0,0,0,255">
+                                <styles>
+                                        <style name="Example output sink, remember to correct the directory path before running!$0" fontSize="12" />
+                                </styles>
+                        </annotation>
+                        <annotation name="Example input data, a sinusoid, a square wave, a modified sawtooth wave and impulsive noise are embedded in a 10 dimensional linear mixture." width="200" height="100" posX="6" posY="367" background="255,255,153,255" foreground="0,0,0,255">
+                                <styles>
+                                        <style name="Example input data, a sinusoid, a square wave, a modified sawtooth wave and impulsive noise are embedded in a 10 dimensional linear mixture.$0" fontSize="12" />
+                                </styles>
+                        </annotation>
+                </annotations>
+        </moduleGroup>
+</pipeline>
+

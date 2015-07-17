@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline version=".1">
+        <moduleGroup name="Untitled" description="" id="Untitled_0" posX="0" posY="0" rotation="0">
+                <module name="Estimate" description="Estimate independent components after robust analysis and clustering." location="arabica://module/ica/estimate" id="Estimate_0" package="Arabica/ICA" version="1.0" icon="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" posX="0" posY="0" rotation="0" executableVersion="1.0">
+                        <authors>
+                                <author fullName="Jarkko Ylipaavalniemi" email="jarkko.ylipaavalniemi@tkk.fi" website="http://www.cis.hut.fi/whyj" />
+                        </authors>
+                        <executableAuthors>
+                                <author fullName="Jarkko Ylipaavalniemi" email="jarkko.ylipaavalniemi@tkk.fi" website="http://www.cis.hut.fi/whyj" />
+                        </executableAuthors>
+                        <tag>Arabica</tag>
+                        <tag>estimate</tag>
+                        <tag>ICA</tag>
+                        <uri>http://launchpad.net/arabica-ica</uri>
+                        <metadata>
+                                <data key="__creationDateKey" value="Wed Nov 05 09:15:51 EET 2008" />
+                        </metadata>
+                        <input name="Clustering" description="Input file with a clustering structure &quot;cluster&quot; and an optional ranking structure &quot;rank&quot;." id="Estimate.Clustering_0" enabled="true" required="true" order="0" switch="-cluster" switchSpaced="true">
+                                <format type="File" cardinality="1">
+                                        <fileTypes>
+                                                <filetype name="Matlab Data File" extension="mat" description="Matlab data file with any content." />
+                                        </fileTypes>
+                                </format>
+                        </input>
+                        <input name="Robust Components" description="Input file with a matrix or a cell array for both mixing &quot;A&quot; and demixing &quot;W&quot;." id="Estimate.RobustComponents_0" enabled="true" required="true" order="1" switch="-in" switchSpaced="true">
+                                <format type="File" cardinality="-1">
+                                        <fileTypes>
+                                                <filetype name="Matlab Data File" extension="mat" description="Matlab data file with any content." />
+                                        </fileTypes>
+                                </format>
+                        </input>
+                        <input name="Data Matrix" description="Input file, assumed to contain only a single suitable variable for a data matrix or a variable &quot;X&quot;." id="Estimate.DataMatrix_0" enabled="true" required="true" order="2" switch="-data" switchSpaced="true">
+                                <format type="File" cardinality="1">
+                                        <fileTypes>
+                                                <filetype name="Matlab Data File" extension="mat" description="Matlab data file with any content." />
+                                        </fileTypes>
+                                </format>
+                        </input>
+                        <output name="Centroids" description="Output file with a matrix or a cell array for each of the estimated centroid mixing &quot;A&quot;, demixing &quot;W&quot; and sources &quot;S&quot;." id="Estimate.Centroids_0" enabled="false" required="false" order="3" switch="-centroid" switchSpaced="true">
+                                <format type="File" cardinality="1">
+                                        <fileTypes>
+                                                <filetype name="Matlab Data File" extension="mat" description="Matlab data file with any content." />
+                                        </fileTypes>
+                                </format>
+                        </output>
+                        <output name="Variances" description="Output file with a matrix or a cell array for each of the estimated variance mixing &quot;A&quot;, demixing &quot;W&quot; and sources &quot;S&quot;." id="Estimate.Variances_0" enabled="false" required="false" order="4" switch="-variance" switchSpaced="true">
+                                <format type="File" cardinality="1">
+                                        <fileTypes>
+                                                <filetype name="Matlab Data File" extension="mat" description="Matlab data file with any content." />
+                                        </fileTypes>
+                                </format>
+                        </output>
+                        <output name="Quantiles" description="Output file with a matrix or a cell array for each of the estimated quantile mixing &quot;A&quot;, demixing &quot;W&quot; and sources &quot;S&quot;." id="Estimate.Quantiles_0" enabled="false" required="false" order="5" switch="-quantile" switchSpaced="true">
+                                <format type="File" cardinality="1">
+                                        <fileTypes>
+                                                <filetype name="Matlab Data File" extension="mat" description="Matlab data file with any content." />
+                                        </fileTypes>
+                                </format>
+                        </output>
+                        <output name="Passthru" description="Passthru of the data matrix file. This is just a convenience output to make building elaborate work flows easier." id="Estimate.Passthru_0" enabled="false" required="false" order="6">
+                                <format type="File" cardinality="-2" cardinalityBase="Data Matrix" base="Data Matrix">
+                                        <fileTypes>
+                                                <filetype name="Matlab Data File" extension="mat" description="Matlab data file with any content." />
+                                        </fileTypes>
+                                </format>
+                        </output>
+                </module>
+        </moduleGroup>
+</pipeline>
