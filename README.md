@@ -5,6 +5,8 @@ With Independent Component Analysis [1,2,3] variants FastICA (http://research.ic
 The idea is to blindly separate channels so that their statistical independence is maximized using the FastICA variant of Independent Component Analysis (ICA:
 https://dl.dropboxusercontent.com/u/6757026/githubFigures/ica_basicIllustration.png
 
+## References
+
 [1] Hyvärinen A, Oja E. 2000. Independent component analysis: algorithms and applications. Neural Netw 13:411–430. http://dx.doi.org/10.1016/S0893-6080(00)00026-5.
 
 [2] Bronstein AM, Bronstein MM, Zibulevsky M, Zeevi YY. 2005. Sparse ICA for blind separation of transmitted and reflected images. Int. J. Imaging Syst. Technol. 15:84–91. http://dx.doi.org/10.1002/ima.20042.
