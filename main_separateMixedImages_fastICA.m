@@ -1,6 +1,11 @@
 % Wrapper for fastICA/arabica for image data
 function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrder)
     
+    % See e.g.
+    % Guest Editorial - Special Issue: Latent variable analysis and signal separation
+    % V. Vignerona, V. Zarzosob, R. Gribonvalc, E. Vincentc
+    % http://dx.doi.org.libproxy.aalto.fi/10.1016/j.sigpro.2012.01.001
+
     % Input 
     %   im        - 2D Image
     %               cell with as many elements as there are channels im{1},..im{4}
@@ -20,15 +25,37 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
     %   imOut   - 2D Image
     %             same size as in with separated channels
 
+    % EXAMPLE
+    % ----------------------
+    
     % for 3-5D Microscopy images, loop outside this function so that this
     % function only "sees" the 2D slices
     % e.g. 
        
+    %     plotInput = true;
+    %     rgbOrder = [3 2];
+    %     noOfICs = 2;
+    %     for tp = 1 : length(imageStack{1})
+    %         for slice = 1 : size(imageStack{1}{1},3)
+    %             imForICA = import_reshapeForICAseparation(imageStack, tp, slice);
+    %             imOut = main_separateMixedImages_fastICA(imForICA, noOfICs, plotInput, rgbOrder);
+    %         end
+    %     end
     
-    % See e.g.
-    % Guest Editorial - Special Issue: Latent variable analysis and signal separation
-    % V. Vignerona, V. Zarzosob, R. Gribonvalc, E. Vincentc
-    % http://dx.doi.org.libproxy.aalto.fi/10.1016/j.sigpro.2012.01.001
+    %     function imForICA = import_reshapeForICAseparation(imageStack,tp,slice)
+    %         
+    %         for ch = 1 : length(imageStack)
+    %             imForICA{ch} = double(imageStack{ch}{tp}(:,:,slice));
+    %             maxValue(ch) = max(imForICA{ch}(:));
+    %         end
+    %         
+    %         % normalize for image maximum
+    %         maxValue
+    %         maxOfMaxes = max(maxValue);
+    %         for ch = 1 : length(imageStack)
+    %             imForICA{ch} = imForICA{ch} / maxOfMaxes;
+    %         end
+    
 
     % TEST DATA
     if nargin == 0
