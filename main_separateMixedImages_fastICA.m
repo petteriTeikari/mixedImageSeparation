@@ -1,20 +1,42 @@
 % Wrapper for fastICA/arabica for image data
-function main_separateMixedImages_fastICA(im)
+function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrder)
     
     % Input 
-    %   im  - cell with as many elements as there are channels im{1},..im{4}
-    %         for example, you could do another loop around this function
-    %         in order to separate whole stacks, and folders, etc.
+    %   im        - 2D Image
+    %               cell with as many elements as there are channels im{1},..im{4}
+    %               for example, you could do another loop around this function
+    %               in order to separate whole stacks, and folders, etc.
+    
+    %   noOfICs     number of ICs in the data (e.g. you recorded 4
+    %               channels, but only used two dyes, then you could want 
+    %               2 ICs out to correspond to those dyes. Might need more
+    %               testing if autofluorescence is very high)
+    
+    %   plotInput - plots the results (boolean flag)
+    %   rgbOrder  - if {1} is red, {2} green, {3} blue, then order is [1 2 3]
+    %              - typical order is blue-green-red, thus rgbOrder = [3 2 1]
     
     % Output
-    %  - no output at the moment, fix when going beyond just toying around      
+    %   imOut   - 2D Image
+    %             same size as in with separated channels
 
+    % for 3-5D Microscopy images, loop outside this function so that this
+    % function only "sees" the 2D slices
+    % e.g. 
+       
+    
     % See e.g.
     % Guest Editorial - Special Issue: Latent variable analysis and signal separation
     % V. Vignerona, V. Zarzosob, R. Gribonvalc, E. Vincentc
     % http://dx.doi.org.libproxy.aalto.fi/10.1016/j.sigpro.2012.01.001
 
+    % TEST DATA
     if nargin == 0
+        
+        fileName = mfilename; fullPath = mfilename('fullpath');
+        pathCode = strrep(fullPath, fileName, '');
+        if ~isempty(pathCode); cd(pathCode); end
+        scrsz = get(0,'ScreenSize'); % get screen size for plotting
         
         % Test locally the fastICA
         path = 'testImages';
@@ -27,18 +49,23 @@ function main_separateMixedImages_fastICA(im)
         rgbOrder = [2 1 3];
         
         % IMPORT
-     
+        maxValue = 2^12 - 1; % input is 12-bit (in 16-bit TIFF though)
+                             % taken from .OIB file 
         im = cell(length(file),1);
         for i = 1 : length(file)
             im{i} = imread(fullfile(path, file{i}));
-            im{i} = double(im{i}) / 4095;
-            % scale, input is 12-bit (in 16-bit TIFF though)
-            % taken from .OIB file 
+            im{i} = double(im{i}) / maxValue; % scale, 
+            
         end
+        
+        % set plot flag
+        plotInput = true;
+        noOfICs = 3;
                  
     else
         % input arguments 
-    end 
+    end
+    whos
     
     % Location of FastICA toolbox and arabica toolbox                    
     arabica_folder = 'arabica'; addpath(genpath(arabica_folder)); 
@@ -49,13 +76,13 @@ function main_separateMixedImages_fastICA(im)
     
     %% PLOT INPUT
     
-        % plot    
-        plotInput = false;
+        % plot
         if plotInput
-            fig = figure('Name', 'Input'); rows = 1; cols = 2;
+            fig = figure('Color', 'w', 'Name', 'Input'); rows = 1; cols = 3;
                 set(fig,  'Position', [0.4*scrsz(3) 0.325*scrsz(4) 0.6*scrsz(3) 0.60*scrsz(4)])
             i = 1; sp(i) = subplot(rows,cols,i); imshow(im{i}, []); title(['Ch. ', num2str(i)]);
             i = 2; sp(i) = subplot(rows,cols,i); imshow(im{i}, []); title(['Ch. ', num2str(i)]);
+            i = 3; sp(i) = subplot(rows,cols,i); imshow(im{i}, []); title(['Ch. ', num2str(i)]);
         end
     
         
@@ -72,7 +99,7 @@ function main_separateMixedImages_fastICA(im)
         % http://research.ics.aalto.fi/ica/fastica/
         tic;
         % see fastica.m for additional parameters
-        [im_fastICA, A, W] = fastica(im_toICA, 'approach', 'defl', 'sampleSize', 1); 
+        [im_fastICA, A, W] = fastica(im_toICA, 'numOfIC', noOfICs, 'approach', 'defl', 'sampleSize', 1); 
         % [im_fastICA, A, W] = fastica(im_fastICA, 'initGuess', A); % "2nd Pass"
         timeFastICA.fastICAToolbox = toc;
         
@@ -105,8 +132,9 @@ function main_separateMixedImages_fastICA(im)
             %   called to generate the random indices as BS(N) and must return a row
             %   vector of indices in the range from 1 to N.
 
-        % convert back to image
+        % convert back to image        
         im_fromICA = ICAtoImage(im_fastICA, imSize);  
+        
         
         % scale the image
         im_fromICA_scaled = scale_IC_components(im, im_fromICA);
@@ -118,12 +146,20 @@ function main_separateMixedImages_fastICA(im)
         imIn_RGB = mergeComponentsToRGB(im, rgbOrder);
         imOut_RGB = mergeComponentsToRGB(im_fromICA_reOrdered, rgbOrder); 
         % imOut_RGB_nonscaled = mergeComponentsToRGB(im_fromICA, rgbOrder); 
-            
+           
+        % output
+        imOut = imOut_RGB;
+        
+        whos
+        
+        
     %% PLOT
     
-        fig = figure;
-            set(fig,  'Position', [0.01*scrsz(3) 0.325*scrsz(4) 0.4*scrsz(3) 0.60*scrsz(4)])
-            plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB)
+        if plotInput
+            fig = figure('Color', 'w');
+                set(fig,  'Position', [0.01*scrsz(3) 0.325*scrsz(4) 0.4*scrsz(3) 0.60*scrsz(4)])
+                plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB)
+        end
 
         
         
@@ -165,8 +201,13 @@ function main_separateMixedImages_fastICA(im)
             noOfICs = length(im_ICs_Cell);
             for ch = 1 : noOfICs              
                 imScaled{ch} = abs(im_ICs_Cell{ch});
-                imScaled{ch} = imScaled{ch} / max(imScaled{ch}(:));
+                maxOfMaxes(ch) = max(imScaled{ch}(:));                
             end
+            
+            for ch = 1 : noOfICs              
+                imScaled{ch} = imScaled{ch} / max(maxOfMaxes);
+            end
+            
             % add the intensity scaling from input?
     
             
@@ -198,9 +239,19 @@ function main_separateMixedImages_fastICA(im)
         %% Merge individual channels to RGB
         function imMat = mergeComponentsToRGB(imCell, rgbOrder)
             
-            noOfChannels = length(imCell);
+            noOfChannels = length(imCell)
+            
+            % happens when noOfICs is less then number of input channels
+            if length(rgbOrder) < length(imCell)
+                rgbOrder = [3 2 1]; % quick fix
+                disp('rgbOrder fixed')
+            end
+            
+            imMat = zeros(size(imCell{1},1), size(imCell{1},2), 3);            
             for ch = 1 : noOfChannels
-                imMat(:,:,ch) = imCell{rgbOrder(ch)};                
+                ch
+                imIndex = rgbOrder(ch)
+                imMat(:,:,rgbOrder(ch)) = imCell{ch};                
             end
         
             
