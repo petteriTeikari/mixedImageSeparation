@@ -87,12 +87,13 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         
         % set plot flag
         plotInput = true;
-        noOfICs = 3;
+        noOfICs = 2;
+        verboseStr = 'on';
                  
     else
         % input arguments 
+        verboseStr = 'off';
     end
-    whos
     
     % Location of FastICA toolbox and arabica toolbox                    
     arabica_folder = 'arabica'; addpath(genpath(arabica_folder)); 
@@ -126,7 +127,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         % http://research.ics.aalto.fi/ica/fastica/
         tic;
         % see fastica.m for additional parameters
-        [im_fastICA, A, W] = fastica(im_toICA, 'numOfIC', noOfICs, 'approach', 'defl', 'sampleSize', 1); 
+        [im_fastICA, A, W] = fastica(im_toICA, 'numOfIC', noOfICs, 'verbose', verboseStr, 'approach', 'defl', 'sampleSize', 1); 
         % [im_fastICA, A, W] = fastica(im_fastICA, 'initGuess', A); % "2nd Pass"
         timeFastICA.fastICAToolbox = toc;
         
@@ -147,7 +148,9 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         BS = 0.8;
         tic        
         % [A, W] = api_ica_ica(im_toICA, n) % , 'bootstrap', BS) 
-        disp(' '); disp('arabica not working')
+        if strcmp(verboseStr, 'on')
+            disp(' '); disp('arabica not working')
+        end
         timeFastICA.arabica = toc;
 
             %   "arabica" uses resampling to
@@ -177,15 +180,13 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         % output
         imOut = imOut_RGB;
         
-        whos
-        
         
     %% PLOT
     
         if plotInput
             fig = figure('Color', 'w');
                 set(fig,  'Position', [0.01*scrsz(3) 0.325*scrsz(4) 0.4*scrsz(3) 0.60*scrsz(4)])
-                plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB)
+                plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB, noOfICs)
         end
 
         
@@ -225,23 +226,29 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         %% Normalize ICs and make IC values positive
         function imScaled = scale_IC_components(imIn, im_ICs_Cell)
 
+            for ch = 1 : length(imIn)
+                maxOfInput(ch) = max(imIn{ch}(:))
+            end
+            
             noOfICs = length(im_ICs_Cell);
             for ch = 1 : noOfICs              
                 imScaled{ch} = abs(im_ICs_Cell{ch});
-                maxOfMaxes(ch) = max(imScaled{ch}(:));                
+                maxOfICs(ch) = max(imScaled{ch}(:));
             end
             
             for ch = 1 : noOfICs              
-                imScaled{ch} = imScaled{ch} / max(maxOfMaxes);
+                % imScaled{ch} = imScaled{ch} / max(maxOfICs);
+                imScaled{ch} = imScaled{ch} / maxOfICs(ch);
+                imScaled{ch} = imScaled{ch} * maxOfInput(ch);
             end
             
             % add the intensity scaling from input?
     
             
         %% Plot for the result of unmixing
-        function plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB)
+        function plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB, noOfICs)
     
-            rows = 3; cols = 6;
+            rows = 4; cols = 6;
             
             % merged RGBs
             i = 1;             
@@ -255,18 +262,36 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             % components
             ind0 = (2 * cols);
             for j = 1 : size(imOut_RGB,3)
+                if j <= noOfICs
+                    sp(i+j) = subplot(rows,cols,[ind0+j ind0+j+1]);
+                        imshow(imOut_RGB(:,:,j), [])
+                        ind0 = ind0+1;
+                        title(['IC ', num2str(j)])
+                        colorbar
+                end
+            end
+            
+            % input channels
+            ind0 = (3 * cols);
+            RGB_fixed = {'R'; 'G'; 'B'};
+            for j = 1 : size(imIn_RGB,3)
                 sp(i+j) = subplot(rows,cols,[ind0+j ind0+j+1]);
-                    imshow(imOut_RGB(:,:,j), [])
+                    imshow(imIn_RGB(:,:,j), [])
                     ind0 = ind0+1;
-                    title(['IC ', num2str(j)])
+                    title(['Ch. ', num2str(j), '(', RGB_fixed{j}, ')'])
                     colorbar
             end
+            
+            % TODO:
+            % Maybe add some color purity measure for easy verification of
+            % the separation process? e.g. COLORLAB
+            % http://www.uv.es/vista/vistavalencia/software/colorlab.html
             
             
         %% Merge individual channels to RGB
         function imMat = mergeComponentsToRGB(imCell, rgbOrder)
             
-            noOfChannels = length(imCell)
+            noOfChannels = length(imCell);
             
             % happens when noOfICs is less then number of input channels
             if length(rgbOrder) < length(imCell)
@@ -276,8 +301,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             
             imMat = zeros(size(imCell{1},1), size(imCell{1},2), 3);            
             for ch = 1 : noOfChannels
-                ch
-                imIndex = rgbOrder(ch)
+                imIndex = rgbOrder(ch);
                 imMat(:,:,rgbOrder(ch)) = imCell{ch};                
             end
         
