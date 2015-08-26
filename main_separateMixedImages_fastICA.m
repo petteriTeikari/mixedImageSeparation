@@ -87,7 +87,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         end
         
         % denoise
-        denoisingON = true;
+        denoisingON = false;
         if denoisingON
             
             matResultsFilename = fullfile(path, 'denoisingResults.mat');
@@ -100,6 +100,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             
                 try
                     disp('Denoising inputs with BM3D, channel: ')
+                    % Add Anscombe here transform here, and the inverse
                     for i = 1 : length(im)
                         fprintf('%d ', i)
                         [NA, im{i}] = BM3D(1, im{i}); 
@@ -206,7 +207,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         [im_fromICA_scaled, maxOfICs, maxOfInput] = scale_IC_components(im, im_fromICA);
                       
         % re-order the ICs to match the input
-        [im_fromICA_reOrdered, newOrder] = reOrderICs(im_fromICA_scaled, im);
+        [im_fromICA_reOrdered, newOrder] = reOrderICs(im_fromICA_scaled, im, maxOfICs, maxOfInput);
         
         % merge into RGB
         imIn_RGB = mergeComponentsToRGB(im, rgbOrder);
@@ -217,26 +218,40 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         imOut = imOut_RGB;
         
         
+        
     %% PLOT
     
         if plotInput
             fig = figure('Color', 'w');
                 set(fig,  'Position', [0.01*scrsz(3) 0.325*scrsz(4) 0.4*scrsz(3) 0.60*scrsz(4)])
                 plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB, noOfICs)
-                % export_fig('figure.png', '-r200', '-a2')
+                
+                if denoisingON
+                    fileNameOut = 'ica_basicIllustration_withBM3D_Denoising.png';
+                else
+                    fileNameOut = 'ica_basicIllustration.png';
+                end
+                
+                try
+                    export_fig(fullfile('figuresOut', fileNameOut), '-r200', '-a2')
+                catch err
+                    err
+                    warning('No export_fig in the path?')
+                end
         end
-
         
         
     %% SUBFUNCTIONS
     
         %% ICs do not necessarily come in the same order as input images
-        function [im_reOrdered, orderOut] = reOrderICs(im_fromICA, im)
+        function [im_reOrdered, orderOut] = reOrderICs(im_fromICA, im, maxOfICs, maxOfInput)
                       
             % convert cell -> mat
             for ch = 1 : length(im_fromICA)
                 imIcaMat(:,:,ch) = im_fromICA{ch};
+                imIcaMat(:,:,ch) = imIcaMat(:,:,ch) / max(max(imIcaMat(:,:,ch))); % normalize 
                 imMat(:,:,ch) = im{ch};
+                imMat(:,:,ch) = imMat(:,:,ch) / max(max(imMat(:,:,ch))); % normalize 
             end
             
             % try all different permutations
@@ -258,6 +273,17 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             for ch = 1 : length(im_fromICA)
                 im_reOrdered{ch} = im_fromICA{orderOut(ch)};
             end
+            
+            % re-scale the re-ordered components from their normalized
+            % values
+            maxOfInput = maxOfInput / max(maxOfInput); % normalize these as well
+            maxOfICs = maxOfICs / max(maxOfICs);
+            for ch = 1 : length(im_reOrdered)
+                im_reOrdered{ch} = im_reOrdered{ch} * maxOfInput(ch);                
+            end
+            
+            
+            
             
             
         %% Normalize ICs and make IC values positive
