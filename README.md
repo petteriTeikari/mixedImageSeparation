@@ -6,7 +6,8 @@ The idea is to blindly separate channels so that their statistical independence 
 
 ![ICA](https://dl.dropboxusercontent.com/u/6757026/githubFigures/ica_basicIllustration.png)
 
-And the same slice with <a href="http://www.cs.tut.fi/~foi/GCF-BM3D/">BM3D Denoising</a>:
+And the same slice with <a href="http://www.cs.tut.fi/~foi/GCF-BM3D/">BM3D Denoising</a> and <a href="http://www.cs.tut.fi/~foi/invansc/">Anscombe transform</a> before denoising, and inverse Anscombe transform after the denoising:
+
 ![ICA Denoising](https://dl.dropboxusercontent.com/u/6757026/githubFigures/ica_basicIllustration_withBM3D_Denoising.png)
 
 ## TODO 
