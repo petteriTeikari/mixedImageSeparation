@@ -74,6 +74,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         file{2} = 'postTreatment_with_redDrug_200um stack_slice47_ch3_mixed.tif'; % red channel
         file{3} = 'postTreatment_with_redDrug_200um stack_slice47_ch1_noiseChannel.tif'; % blue channel, only noise
         rgbOrder = [2 1 3];
+         
         
         % IMPORT
         maxValue = 2^12 - 1; % input is 12-bit (in 16-bit TIFF though)
@@ -85,9 +86,39 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             
         end
         
+        % denoise
+        denoisingON = true;
+        if denoisingON
+            
+            matResultsFilename = fullfile(path, 'denoisingResults.mat');
+            if exist(matResultsFilename, 'file') == 2
+
+                disp('loading denoising results from disk')
+                load(matResultsFilename)
+                
+            else
+            
+                try
+                    disp('Denoising inputs with BM3D, channel: ')
+                    for i = 1 : length(im)
+                        fprintf('%d ', i)
+                        [NA, im{i}] = BM3D(1, im{i}); 
+                    end
+                    fprintf('\n ')
+                    save(matResultsFilename, 'im')
+                    
+                catch err
+                    err
+                    warning('No BM3D (http://www.cs.tut.fi/~foi/GCF-BM3D/)?')
+                    disp('No additional denoising done')
+                end
+                
+            end
+        end
+        
         % set plot flag
         plotInput = true;
-        noOfICs = 2;
+        noOfICs = 3;
         verboseStr = 'on';
                  
     else
@@ -161,13 +192,18 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             %   disables bootstrapping. If BS is a function handle, that function is
             %   called to generate the random indices as BS(N) and must return a row
             %   vector of indices in the range from 1 to N.
+            
+            % Check also, and implement at some point?
+            %   ICASSO: analysing and visualising the reliability of independent components
+            %   ISCTEST: principled statistical testing of independent components
+            % http://research.ics.aalto.fi/ica/fastica/
 
         % convert back to image        
         im_fromICA = ICAtoImage(im_fastICA, imSize);  
         
         
         % scale the image
-        im_fromICA_scaled = scale_IC_components(im, im_fromICA);
+        [im_fromICA_scaled, maxOfICs, maxOfInput] = scale_IC_components(im, im_fromICA);
                       
         % re-order the ICs to match the input
         [im_fromICA_reOrdered, newOrder] = reOrderICs(im_fromICA_scaled, im);
@@ -187,6 +223,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             fig = figure('Color', 'w');
                 set(fig,  'Position', [0.01*scrsz(3) 0.325*scrsz(4) 0.4*scrsz(3) 0.60*scrsz(4)])
                 plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB, noOfICs)
+                % export_fig('figure.png', '-r200', '-a2')
         end
 
         
@@ -224,10 +261,10 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             
             
         %% Normalize ICs and make IC values positive
-        function imScaled = scale_IC_components(imIn, im_ICs_Cell)
+        function [imScaled, maxOfICs, maxOfInput]  = scale_IC_components(imIn, im_ICs_Cell)
 
             for ch = 1 : length(imIn)
-                maxOfInput(ch) = max(imIn{ch}(:))
+                maxOfInput(ch) = max(imIn{ch}(:));
             end
             
             noOfICs = length(im_ICs_Cell);
@@ -239,7 +276,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             for ch = 1 : noOfICs              
                 % imScaled{ch} = imScaled{ch} / max(maxOfICs);
                 imScaled{ch} = imScaled{ch} / maxOfICs(ch);
-                imScaled{ch} = imScaled{ch} * maxOfInput(ch);
+                % imScaled{ch} = imScaled{ch} * maxOfInput(ch);
             end
             
             % add the intensity scaling from input?
