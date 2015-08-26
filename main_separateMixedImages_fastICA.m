@@ -363,7 +363,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
                     residual = imIn_RGB(:,:,j) / max(max(imIn_RGB(:,:,j))) - ...
                                imOut_RGB(:,:,j) / max(max(imOut_RGB(:,:,j)));
                     
-                    imshow(residual, [])
+                    imshow(residual, []) % TODO: you still need to correct the residual magnitude
                     ind0 = ind0+1;
                     tit(i+j) = title(['Residual Ch.', num2str(j), ' - IC', num2str(j)]);
                     colorbar
