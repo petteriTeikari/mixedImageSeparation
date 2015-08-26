@@ -2,9 +2,19 @@
 
 With Independent Component Analysis [1,2,3] variants FastICA (http://research.ics.aalto.fi/ica/fastica/) and arabica (https://launchpad.net/arabica, which is basically a robust extension of FastICA [4]). 
 
-The idea is to blindly separate channels so that their statistical independence is maximized using the FastICA variant of Independent Component Analysis (ICA):
+The idea is to blindly separate channels so that their statistical independence is maximized using the FastICA variant of Independent Component Analysis (ICA) using the raw image without any denoising
 
 ![ICA](https://dl.dropboxusercontent.com/u/6757026/githubFigures/ica_basicIllustration.png)
+
+And the same slice with <a href="http://www.cs.tut.fi/~foi/GCF-BM3D/">BM3D Denoising</a>:
+![ICA Denoising](https://dl.dropboxusercontent.com/u/6757026/githubFigures/ica_basicIllustration_withBM3D_Denoising.png)
+
+## TODO 
+
+"Robustify" the separatation, and try the following related packages:
+
+* <a href="http://www.cis.hut.fi/jhimberg/icasso/">ICASSO</a>: analysing and visualising the reliability of independent components
+* <a href="http://www.cs.helsinki.fi/u/ahyvarin/code/isctest/">ISCTEST</a>: principled statistical testing of independent components
 
 ## References
 
