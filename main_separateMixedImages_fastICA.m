@@ -99,11 +99,15 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             else
             
                 try
-                    disp('Denoising inputs with BM3D, channel: ')
+                    disp('Denoising inputs with BM3D (Anscombe transform), channel: ')
                     % Add Anscombe here transform here, and the inverse
                     for i = 1 : length(im)
                         fprintf('%d ', i)
-                        [NA, im{i}] = BM3D(1, im{i}); 
+                        scaleRange = 0.7;  %% ... then set data range in [0.15,0.85], to avoid clipping of extreme values
+                        [im_VST, y_sigma, transformLimits] = denoise_anscombeTransform(im{i}, 'forward', scaleRange, []);
+                        [NA, denoised_VST] = BM3D(1, im_VST); 
+                        [im{i}, ~, ~] = denoise_anscombeTransform(denoised_VST, 'inverse', scaleRange, transformLimits);
+
                     end
                     fprintf('\n ')
                     save(matResultsFilename, 'im')
@@ -223,7 +227,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
     
         if plotInput
             fig = figure('Color', 'w');
-                set(fig,  'Position', [0.01*scrsz(3) 0.325*scrsz(4) 0.4*scrsz(3) 0.60*scrsz(4)])
+                set(fig,  'Position', [0.01*scrsz(3) 0.125*scrsz(4) 0.4*scrsz(3) 0.80*scrsz(4)])
                 plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB, noOfICs)
                 
                 if denoisingON
@@ -311,16 +315,16 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         %% Plot for the result of unmixing
         function plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB, noOfICs)
     
-            rows = 4; cols = 6;
+            rows = 5; cols = 6;
             
             % merged RGBs
             i = 1;             
                 sp(i) = subplot(rows,cols,[1 2 3 7 8 9]);
-                imshow(imIn_RGB, []); title('In')
+                imshow(imIn_RGB, []); tit(i) = title('In');
             
             i = 2;             
                 sp(i) = subplot(rows,cols,[4 5 6 10 11 12]);
-                imshow(imOut_RGB, []); title('Out ICA')
+                imshow(imOut_RGB, []); tit(i) = title('Out ICA');
                 
             % components
             ind0 = (2 * cols);
@@ -329,11 +333,12 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
                     sp(i+j) = subplot(rows,cols,[ind0+j ind0+j+1]);
                         imshow(imOut_RGB(:,:,j), [])
                         ind0 = ind0+1;
-                        title(['IC ', num2str(j)])
+                        tit(i+j) = title(['IC ', num2str(j)]);
                         colorbar
                 end
             end
             
+            i = i + j;
             % input channels
             ind0 = (3 * cols);
             RGB_fixed = {'R'; 'G'; 'B'};
@@ -341,9 +346,31 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
                 sp(i+j) = subplot(rows,cols,[ind0+j ind0+j+1]);
                     imshow(imIn_RGB(:,:,j), [])
                     ind0 = ind0+1;
-                    title(['Ch. ', num2str(j), '(', RGB_fixed{j}, ')'])
+                    tit(i+j) = title(['Ch. ', num2str(j), '(', RGB_fixed{j}, ')']);
                     colorbar
             end
+            
+            i = i + j;
+            % the differences, i.e. what was removed from each input
+            % channel
+            ind0 = (4 * cols);
+            RGB_fixed = {'R'; 'G'; 'B'};
+            for j = 1 : size(imIn_RGB,3)
+                sp(i+j) = subplot(rows,cols,[ind0+j ind0+j+1]);
+                
+                    % normalize quick fix, check later as the components
+                    % have been normalized so many times now :D
+                    residual = imIn_RGB(:,:,j) / max(max(imIn_RGB(:,:,j))) - ...
+                               imOut_RGB(:,:,j) / max(max(imOut_RGB(:,:,j)));
+                    
+                    imshow(residual, [])
+                    ind0 = ind0+1;
+                    tit(i+j) = title(['Residual Ch.', num2str(j), ' - IC', num2str(j)]);
+                    colorbar
+            end
+            
+            set(sp, 'FontSize', 7)
+            set(tit, 'FontSize', 9, 'FontWeight', 'bold')
             
             % TODO:
             % Maybe add some color purity measure for easy verification of
