@@ -87,7 +87,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         end
         
         % denoise
-        denoisingON = false;
+        denoisingON = true;
         if denoisingON
             
             matResultsFilename = fullfile(path, 'denoisingResults.mat');
@@ -158,7 +158,8 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         % pre-process the 2D image data so that is accepted by the FastICA
         % algorithm
         im_toICA = imageToFastICA(im, imSize);    
-
+            % save('im_2PM_toICA.mat', 'im_toICA')
+        
         % FastICA toolbox/library
         % http://research.ics.aalto.fi/ica/fastica/
         tic;
@@ -183,9 +184,9 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         n = 100; % n times to run the algorithn with different subset each time
         BS = 0.8;
         tic        
-        % [A, W] = api_ica_ica(im_toICA, n) % , 'bootstrap', BS) 
+        % [A, W] = api_ica_ica_PT(im_toICA, n, 'bootstrap', BS, 'ics', noOfICs) 
         if strcmp(verboseStr, 'on')
-            disp(' '); disp('arabica not working')
+            disp(' '); disp('arabica not working at the moment')
         end
         timeFastICA.arabica = toc;
 
@@ -203,6 +204,34 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             %   ISCTEST: principled statistical testing of independent components
             % http://research.ics.aalto.fi/ica/fastica/
 
+        % Instead of Arabica we can use the Icasso -package
+        % http://research.ics.aalto.fi/ica/icasso/
+        useIcasso = true;
+        
+            if useIcasso
+                
+                sR = icassoEst('both', im_toICA, 1024, 'lastEig', 3, 'numOfIC', 3, ...
+                               'approach', 'defl')
+      
+                sR=icassoExp(sR);
+                
+                    sR.cluster
+                    sR.cluster.index.R
+                    sR.projection
+                
+                [Iq, A, W, S, index2centrotypes]=icassoResult(sR,3);
+                % [tmp,i] = sort(-Iq)
+                im_fastICA = S;
+                
+                save('sR.mat', 'sR')
+                
+                % NOTE! The Icasso, always = ('sampleSize', 1)
+                
+                
+            else
+               disp(' '); disp('Icasso skipped as well as it seems to produce worse estimates than single run')
+            end
+                   
         % convert back to image        
         im_fromICA = ICAtoImage(im_fastICA, imSize);  
         
@@ -215,6 +244,9 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         
         % merge into RGB
         imIn_RGB = mergeComponentsToRGB(im, rgbOrder);
+            % imwrite(imIn_RGB, 'imInRGB.png', 'png')
+            % imwrite(imIn_RGB(:,:,1), 'imInRed.png', 'png')
+            % imwrite(imIn_RGB(:,:,2), 'imInGreen.png', 'png')
         imOut_RGB = mergeComponentsToRGB(im_fromICA_reOrdered, rgbOrder); 
         % imOut_RGB_nonscaled = mergeComponentsToRGB(im_fromICA, rgbOrder); 
            
@@ -231,7 +263,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
                 plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB, noOfICs)
                 
                 if denoisingON
-                    fileNameOut = 'ica_basicIllustration_withBM3D_Denoising.png';
+                    fileNameOut = 'ica_basicIllustration_withBM3D_Denoising_Icasso_n1024.png';
                 else
                     fileNameOut = 'ica_basicIllustration.png';
                 end
@@ -242,7 +274,10 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
                     err
                     warning('No export_fig in the path?')
                 end
+            drawnow
         end
+        
+        s = ff
         
         
     %% SUBFUNCTIONS
