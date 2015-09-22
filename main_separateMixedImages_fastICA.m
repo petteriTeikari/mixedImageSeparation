@@ -87,7 +87,7 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         end
         
         % denoise
-        denoisingON = true;
+        denoisingON = false;
         if denoisingON
             
             matResultsFilename = fullfile(path, 'denoisingResults.mat');
@@ -210,7 +210,8 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
         
             if useIcasso
                 
-                sR = icassoEst('both', im_toICA, 1024, 'lastEig', 3, 'numOfIC', 3, ...
+                noOfIterations = 128;
+                sR = icassoEst('both', im_toICA, noOfIterations, 'lastEig', 3, 'numOfIC', 3, ...
                                'approach', 'defl')
       
                 sR=icassoExp(sR);
@@ -263,9 +264,18 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
                 plotImageUnmixingOutput(fig, imIn_RGB, imOut_RGB, noOfICs)
                 
                 if denoisingON
-                    fileNameOut = 'ica_basicIllustration_withBM3D_Denoising_Icasso_n1024.png';
+                    
+                    if useIcasso
+                        fileNameOut = ['ica_basicIllustration_withBM3D_Denoising_Icasso_n', num2str(noOfIterations), '.png'];
+                    else                        
+                        fileNameOut = 'ica_basicIllustration_withBM3D_Denoising_Icasso_n1024.png';
+                    end
                 else
-                    fileNameOut = 'ica_basicIllustration.png';
+                    if useIcasso
+                        fileNameOut = ['ica_basicIllustration_woDenoising_Icasso_n', num2str(noOfIterations), '.png'];
+                    else
+                        fileNameOut = 'ica_basicIllustration_woDenoising.png';
+                    end
                 end
                 
                 try
@@ -277,7 +287,6 @@ function imOut = main_separateMixedImages_fastICA(im, noOfICs, plotInput, rgbOrd
             drawnow
         end
         
-        s = ff
         
         
     %% SUBFUNCTIONS
