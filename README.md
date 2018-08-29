@@ -4,11 +4,11 @@ With Independent Component Analysis [1,2,3] variants FastICA (http://research.ic
 
 The idea is to blindly separate channels so that their statistical independence is maximized using the FastICA variant of Independent Component Analysis (ICA) using the raw image without any denoising
 
-![ICA](https://dl.dropboxusercontent.com/u/6757026/githubFigures/ica_basicIllustration.png)
+![ICA](https://github.com/petteriTeikari/mixedImageSeparation/blob/master/figuresOut/ica_basicIllustration_woDenoising.png)
 
 And the same slice with <a href="http://www.cs.tut.fi/~foi/GCF-BM3D/">BM3D Denoising</a> and <a href="http://www.cs.tut.fi/~foi/invansc/">Anscombe transform</a> before denoising, and inverse Anscombe transform after the denoising:
 
-![ICA Denoising](https://dl.dropboxusercontent.com/u/6757026/githubFigures/ica_basicIllustration_withBM3D_Denoising.png)
+![ICA Denoising](https://github.com/petteriTeikari/mixedImageSeparation/blob/master/figuresOut/ica_basicIllustration_withBM3D_Denoising.png)
 
 ## TODO 
 
